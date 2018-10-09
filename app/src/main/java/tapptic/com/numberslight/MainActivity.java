@@ -11,6 +11,7 @@ import java.io.IOException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -35,7 +36,11 @@ public class MainActivity extends AppCompatActivity
         mAdapter = new LightsAdapter(myDataset);
         mRecyclerView.setAdapter(mAdapter);
 
-        okHttpClient = new OkHttpClient();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(logging)
+                .build();
     }
 
     public String getLights()
@@ -51,7 +56,6 @@ public class MainActivity extends AppCompatActivity
             ResponseBody body = okHttpClient.newCall(request).execute().body();
             return (body != null) ? body.toString() : "";
         } catch (IOException e) {
-            Logger.debug("MainActivity : getLights : " + e.getMessage());
             return "";
         }
     }
