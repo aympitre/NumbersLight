@@ -5,8 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.SimpleAdapter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,7 +36,18 @@ public class MainActivity extends AppCompatActivity
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new LightsAdapter(myDataset);
+        ArrayList<HashMap<String, Object>> listItems = new ArrayList<HashMap<String, Object>>();
+        HashMap<String, Object> mapping = new HashMap<String, Object>();
+        mapping.put("title" , "pie");
+        mapping.put("image", "image");
+        listItems.add(mapping);
+
+        /*mAdapter = new SimpleAdapter(this.getBaseContext(), listItems, R.layout.itemLight,
+                new String[]{"name", "image"},
+                new int[]{R.id.txtTitle, R.id.imgThumbnail});
+*/
+
+        mAdapter = new LightsAdapter(listItems);
         mRecyclerView.setAdapter(mAdapter);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

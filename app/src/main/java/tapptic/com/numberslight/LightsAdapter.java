@@ -1,17 +1,21 @@
 package tapptic.com.numberslight;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyViewHolder>
 {
-    private String[] mDataset;
+    private ArrayList mDataset;
 
     public static class MyViewHolder extends RecyclerView.ViewHolder
     {
         // each data item is just a string in this case
         public TextView mTextView;
+
         public MyViewHolder(TextView v) {
             super(v);
             mTextView = v;
@@ -19,7 +23,7 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyViewHold
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public LightsAdapter(String[] myDataset)
+    public LightsAdapter(ArrayList myDataset)
     {
         mDataset = myDataset;
     }
@@ -28,9 +32,8 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyViewHold
     @Override
     public LightsAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        // create a new view
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_text_view, parent, false);
+                .inflate(R.layout.txt, parent, false);
 
         MyViewHolder vh = new MyViewHolder(v);
         return vh;
@@ -40,13 +43,14 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.MyViewHold
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position)
     {
-        holder.mTextView.setText(mDataset[position]);
+        //Dataset.get(position)
+        holder.mTextView.setText("pouet");
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount()
     {
-        return mDataset.length;
+        return mDataset.size();
     }
 }
