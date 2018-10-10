@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
@@ -65,7 +64,7 @@ public class BitmapDownloaderTask extends AsyncTask<String, Void, Bitmap> {
             ImageView myimage = imageViewReference.get();
 
             if (myimage != null) {
-                BitmapDrawable bdrawable = new BitmapDrawable(myContext.getResources(),bitmap);
+                BitmapDrawable bdrawable = new BitmapDrawable(myContext.getResources(), bitmap);
                 myimage.setImageDrawable(bdrawable);
 //                myimage.setCompoundDrawables(null,bdrawable,null,null);
             }

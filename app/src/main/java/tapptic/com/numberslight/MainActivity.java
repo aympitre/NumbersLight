@@ -1,11 +1,7 @@
 package tapptic.com.numberslight;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
+import android.content.res.Configuration;
 import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,8 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -37,8 +33,7 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
     public OkHttpClient okHttpClient;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -66,11 +61,10 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
         loadLights();
     }
 
-    public void loadLights()
-    {
+    public void loadLights() {
         try {
             String strLights = getLights();
-            if (strLights!=null) {
+            if (strLights != null) {
                 JSONArray obj = new JSONArray(strLights);
 
                 for (int i = 0; i < obj.length(); i++) {
@@ -94,22 +88,59 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
 
     @Override
     public void onItemClick(View view, int position) {
-        Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("title", mAdapter.getItem(position));
-        startActivity(intent);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            try {
+                JSONObject obj = new JSONObject(getLight(mAdapter.getItem(position)));
+
+                if (obj.getString(LightsAdapter.FIELD_NAME) != null) {
+                    ((TextView) findViewById(R.id.detailTxtTitle)).setText(obj.getString(LightsAdapter.FIELD_NAME));
+                }
+                if (obj.getString(LightsAdapter.FIELD_TEXT) != null) {
+                    ((TextView) findViewById(R.id.detailTxtText)).setText(obj.getString(LightsAdapter.FIELD_TEXT));
+                }
+
+                BitmapDownloaderTask task = new BitmapDownloaderTask(((ImageView) findViewById(R.id.detailImage)), this);
+                task.execute(obj.getString(LightsAdapter.FIELD_IMAGE));
+
+            } catch (JSONException e) {
+                Logger.debug(e.getMessage());
+            }
+
+        } else {
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("title", mAdapter.getItem(position));
+            startActivity(intent);
+        }
     }
 
-    public void showError()
-    {
+    public void showError() {
         ((LinearLayout) findViewById(R.id.main_error)).setVisibility(View.VISIBLE);
     }
-    public void hideError()
-    {
+
+    public void hideError() {
         ((LinearLayout) findViewById(R.id.main_error)).setVisibility(View.GONE);
     }
 
-    public String getLights()
-    {
+    public String getLight(String name) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        Request request = new Request.Builder()
+                .url(ProjectUrl.LIGHTDETAIL + name)
+                .build();
+
+        Logger.debug(ProjectUrl.LIGHTDETAIL + name);
+
+        try {
+            ResponseBody body = okHttpClient.newCall(request).execute().body();
+            return (body != null) ? body.string() : "";
+        } catch (IOException e) {
+            Logger.debug(e.getMessage());
+            return "";
+        }
+    }
+
+    public String getLights() {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
