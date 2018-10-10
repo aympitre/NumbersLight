@@ -28,7 +28,7 @@ import okhttp3.logging.HttpLoggingInterceptor;
 public class MainActivity extends AppCompatActivity implements LightsAdapter.ItemClickListener {
     private LightsAdapter mAdapter;
     private ArrayList<HashMap<String, Object>> lights;
-    private OkHttpClient okHttpClient;
+    public OkHttpClient okHttpClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,24 +48,22 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
                 .addInterceptor(logging)
                 .build();
 
+
         try {
             JSONArray obj = new JSONArray(getLights());
 
             String strMessage = "";
             for (int i = 0; i < obj.length(); i++) {
                 JSONObject message = obj.getJSONObject(i);
-                strMessage += "-" + message.getString("name") + "/" + message.getString("image");
-                Logger.debug(strMessage);
-
                 HashMap<String, Object> mapping = new HashMap<String, Object>();
-                mapping.put("title", "pie");
-                mapping.put("image", "image");
+                mapping.put("title", message.getString(LightsAdapter.FIELD_NAME));
+                mapping.put("image", message.getString(LightsAdapter.FIELD_IMAGE));
                 lights.add(mapping);
             }
 
 
         } catch (JSONException e) {
-
+            Logger.debug("JSONException" + e.getMessage());
         }
 
         mAdapter = new LightsAdapter(this, lights);
@@ -76,10 +74,8 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
 
     @Override
     public void onItemClick(View view, int position) {
-        Logger.debug(lights.get(position).get("title").toString());
-
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("name", lights.get(position).get("title").toString());
+        intent.putExtra("title", lights.get(position).get("title").toString());
         startActivity(intent);
     }
 
@@ -93,7 +89,8 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
 
         try {
             ResponseBody body = okHttpClient.newCall(request).execute().body();
-            return (body != null) ? body.toString() : "";
+
+            return (body != null) ? body.string() : "";
         } catch (IOException e) {
             return "";
         }

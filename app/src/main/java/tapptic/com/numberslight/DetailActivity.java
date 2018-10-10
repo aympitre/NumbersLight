@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,7 +28,7 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_detail);
 
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
@@ -38,18 +39,17 @@ public class DetailActivity extends AppCompatActivity {
         String title = this.getIntent().getStringExtra("title");
 
         try {
-            JSONArray obj = new JSONArray(getLight(title));
+            JSONObject obj = new JSONObject(getLight(title));
 
-            String strMessage = "";
-            for (int i = 0; i < obj.length(); i++) {
-                JSONObject message = obj.getJSONObject(i);
-                strMessage += "-" + message.getString("name") + "/" + message.getString("image");
-                Logger.debug(strMessage);
+            if (obj.getString(LightsAdapter.FIELD_NAME) != null) {
+                ((TextView) findViewById(R.id.detailTxtTitle)).setText(obj.getString(LightsAdapter.FIELD_NAME));
+            }
+            if (obj.getString(LightsAdapter.FIELD_TEXT) != null) {
+                ((TextView) findViewById(R.id.detailTxtText)).setText(obj.getString(LightsAdapter.FIELD_TEXT));
             }
 
-
         } catch (JSONException e) {
-
+            Logger.debug(e.getMessage());
         }
     }
 
@@ -61,10 +61,13 @@ public class DetailActivity extends AppCompatActivity {
                 .url(ProjectUrl.LIGHTDETAIL + name)
                 .build();
 
+        Logger.debug(ProjectUrl.LIGHTDETAIL + name);
+
         try {
             ResponseBody body = okHttpClient.newCall(request).execute().body();
-            return (body != null) ? body.toString() : "";
+            return (body != null) ? body.string() : "";
         } catch (IOException e) {
+            Logger.debug(e.getMessage());
             return "";
         }
     }

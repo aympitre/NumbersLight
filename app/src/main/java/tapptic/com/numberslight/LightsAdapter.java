@@ -9,10 +9,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 
 public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder> {
+
+    public static String FIELD_NAME = "name";
+    public static String FIELD_TEXT = "text";
+    public static String FIELD_IMAGE = "image";
+
 
     private ArrayList<HashMap<String, Object>> mData;
     private LayoutInflater mInflater;
@@ -52,7 +55,7 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
 
         ViewHolder(View itemView) {
             super(itemView);
-            myTextView = (TextView)itemView.findViewById(R.id.txtTitle);
+            myTextView = (TextView) itemView.findViewById(R.id.txtTitle);
             itemView.setOnClickListener(this);
         }
 
