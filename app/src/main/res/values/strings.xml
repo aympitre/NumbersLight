@@ -2,4 +2,7 @@
     <string name="app_name">NumbersLight</string>
     <string name="pge_detail">Detail</string>
     <string name="default_image_description">Image</string>
+    <string name="network_error_title">Une erreur réseau est survenue\nVoulez-vous ré-essayer ?</string>
+    <string name="network_yes">Oui</string>
+    <string name="network_no">non</string>
 </resources>
