@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -47,6 +48,9 @@ public class DetailActivity extends AppCompatActivity {
             if (obj.getString(LightsAdapter.FIELD_TEXT) != null) {
                 ((TextView) findViewById(R.id.detailTxtText)).setText(obj.getString(LightsAdapter.FIELD_TEXT));
             }
+
+            BitmapDownloaderTask task = new BitmapDownloaderTask(((ImageView) findViewById(R.id.detailImage)), this);
+            task.execute(obj.getString(LightsAdapter.FIELD_IMAGE));
 
         } catch (JSONException e) {
             Logger.debug(e.getMessage());

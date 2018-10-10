@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
     private LightsAdapter mAdapter;
     private ArrayList<HashMap<String, Object>> lights;
     public OkHttpClient okHttpClient;
+    public static Context mainContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        MainActivity.mainContext = this;
 
         lights = new ArrayList<HashMap<String, Object>>();
 
@@ -52,15 +54,14 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
         try {
             JSONArray obj = new JSONArray(getLights());
 
-            String strMessage = "";
             for (int i = 0; i < obj.length(); i++) {
                 JSONObject message = obj.getJSONObject(i);
                 HashMap<String, Object> mapping = new HashMap<String, Object>();
                 mapping.put("title", message.getString(LightsAdapter.FIELD_NAME));
                 mapping.put("image", message.getString(LightsAdapter.FIELD_IMAGE));
+
                 lights.add(mapping);
             }
-
 
         } catch (JSONException e) {
             Logger.debug("JSONException" + e.getMessage());
@@ -75,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
     @Override
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(this, DetailActivity.class);
-        intent.putExtra("title", lights.get(position).get("title").toString());
+
+        intent.putExtra("title", mAdapter.getItem(position));
         startActivity(intent);
     }
 

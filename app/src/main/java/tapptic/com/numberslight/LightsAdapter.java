@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,12 +17,9 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
     public static String FIELD_TEXT = "text";
     public static String FIELD_IMAGE = "image";
 
-
     private ArrayList<HashMap<String, Object>> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
-
-    // data is passed into the constructor
 
     LightsAdapter(Context context, ArrayList<HashMap<String, Object>> data) {
         this.mInflater = LayoutInflater.from(context);
@@ -40,6 +38,9 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         String animal = mData.get(position).get("title").toString();
         holder.myTextView.setText(animal);
+
+        BitmapDownloaderTask task = new BitmapDownloaderTask(holder.myImageView, MainActivity.mainContext);
+        task.execute(mData.get(position).get("image").toString());
     }
 
     // total number of rows
@@ -48,14 +49,14 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
         return mData.size();
     }
 
-
-    // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView myTextView;
+        ImageView myImageView;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = (TextView) itemView.findViewById(R.id.txtTitle);
+            myImageView = (ImageView) itemView.findViewById(R.id.imgThumbnail);
             itemView.setOnClickListener(this);
         }
 
