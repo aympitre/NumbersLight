@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
     private ArrayList<HashMap<String, Object>> lights;
     private RecyclerView mRecyclerView;
     public OkHttpClient okHttpClient;
-    public static Context mainContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,8 +54,6 @@ public class MainActivity extends AppCompatActivity implements LightsAdapter.Ite
         mRecyclerView = (RecyclerView) findViewById(R.id.main_recycler);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        MainActivity.mainContext = this;
 
         lights = new ArrayList<HashMap<String, Object>>();
 

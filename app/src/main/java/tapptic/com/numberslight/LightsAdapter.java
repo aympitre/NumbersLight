@@ -17,11 +17,13 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
     public static String FIELD_TEXT = "text";
     public static String FIELD_IMAGE = "image";
 
+    private Context myContext;
     private ArrayList<HashMap<String, Object>> mData;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
     LightsAdapter(Context context, ArrayList<HashMap<String, Object>> data) {
+        myContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -39,7 +41,7 @@ public class LightsAdapter extends RecyclerView.Adapter<LightsAdapter.ViewHolder
         String animal = mData.get(position).get("title").toString();
         holder.myTextView.setText(animal);
 
-        BitmapDownloaderTask task = new BitmapDownloaderTask(holder.myImageView, MainActivity.mainContext);
+        BitmapDownloaderTask task = new BitmapDownloaderTask(holder.myImageView, myContext);
         task.execute(mData.get(position).get("image").toString());
     }
 
